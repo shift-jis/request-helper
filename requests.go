@@ -33,7 +33,7 @@ func Delete(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func DoAndReadString(client http.Client, request *http.Request) (string, *http.Response, error) {
+func DoAndReadString(client *http.Client, request *http.Request) (string, *http.Response, error) {
 	body, response, err := DoAndReadByte(client, request)
 	if err != nil {
 		return "", response, err
@@ -41,7 +41,7 @@ func DoAndReadString(client http.Client, request *http.Request) (string, *http.R
 	return string(body), response, err
 }
 
-func DoAndReadByte(client http.Client, request *http.Request) ([]byte, *http.Response, error) {
+func DoAndReadByte(client *http.Client, request *http.Request) ([]byte, *http.Response, error) {
 	response, err := Do(client, request)
 	if err != nil {
 		return nil, nil, err
@@ -53,7 +53,7 @@ func DoAndReadByte(client http.Client, request *http.Request) ([]byte, *http.Res
 	return body, response, err
 }
 
-func Do(client http.Client, request *http.Request) (*http.Response, error) {
+func Do(client *http.Client, request *http.Request) (*http.Response, error) {
 	return client.Do(request)
 }
 
