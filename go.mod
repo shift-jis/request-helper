@@ -1,4 +1,4 @@
-module requests
+module github.com/RabiesDev/request-helper
 
 go 1.20
 

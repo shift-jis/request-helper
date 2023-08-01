@@ -1,4 +1,4 @@
-package request_helper
+package requests
 
 import (
 	"compress/gzip"
