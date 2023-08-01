@@ -1,4 +1,4 @@
-module request-helper
+module requests
 
 go 1.20
 
