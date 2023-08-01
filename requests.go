@@ -53,6 +53,10 @@ func DoAndReadByte(client *http.Client, request *http.Request) ([]byte, *http.Re
 	return body, response, err
 }
 
+func DoAndHandleResponse[T any](client *http.Client, request *http.Request, handler func(response *http.Response, err error) T) T {
+	return handler(Do(client, request))
+}
+
 func Do(client *http.Client, request *http.Request) (*http.Response, error) {
 	return client.Do(request)
 }
