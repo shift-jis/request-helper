@@ -70,7 +70,7 @@ func SetHeaders(request *http.Request, headerMaps ...map[string]string) {
 }
 
 func ReadResponseBody(response *http.Response) ([]byte, error) {
-	if encodings, has := response.Header["content-encoding"]; has {
+	if encodings, has := response.Header["Content-Encoding"]; has {
 		if strings.EqualFold(encodings[0], "br") {
 			reader := brotli.NewReader(response.Body)
 			defer func(reader *brotli.Reader, src io.Reader) {
