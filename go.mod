@@ -1,5 +1,5 @@
 module github.com/RabiesDev/request-helper
 
-go 1.20
+go 1.23.0
 
-require github.com/andybalholm/brotli v1.0.5 // indirect
+require github.com/andybalholm/brotli v1.1.1

@@ -6,15 +6,13 @@ import (
 )
 
 func TestRequest(t *testing.T) {
-	request := Get("https://www.google.com")
-	SetHeaders(request, map[string]string{
-		"accept-encoding": "gzip, deflate, br",
-	})
-	if err := DoAndHandleResponse[error](http.DefaultClient, request, func(response *http.Response, err error) error {
-		body, err := ReadResponseBody(response)
-		println(string(body))
-		return err
-	}); err != nil {
-		panic(err)
+	request := MustGet("https://tls.peet.ws/api/all")
+	request.Header.Set("accept-encoding", "gzip, deflate, br")
+
+	body, _, err := ReadString(http.DefaultClient, request)
+	if err != nil {
+		t.Fatal(err)
 	}
+
+	t.Log(body)
 }
