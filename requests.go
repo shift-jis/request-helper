@@ -34,8 +34,8 @@ func MustPost(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustPostWithContext(ctx context.Context, url string) *http.Request {
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
+func MustPostWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, url, payload)
 	if err != nil {
 		panic(err)
 	}
@@ -50,8 +50,8 @@ func MustPut(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustPutWithContext(ctx context.Context, url string) *http.Request {
-	request, err := http.NewRequestWithContext(ctx, http.MethodPut, url, nil)
+func MustPutWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodPut, url, payload)
 	if err != nil {
 		panic(err)
 	}
@@ -66,8 +66,8 @@ func MustPatch(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustPatchWithContext(ctx context.Context, url string) *http.Request {
-	request, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, nil)
+func MustPatchWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, payload)
 	if err != nil {
 		panic(err)
 	}
@@ -82,8 +82,8 @@ func MustDelete(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustDeleteWithContext(ctx context.Context, url string) *http.Request {
-	request, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
+func MustDeleteWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, payload)
 	if err != nil {
 		panic(err)
 	}
