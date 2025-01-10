@@ -2,6 +2,7 @@ package requests
 
 import (
 	"compress/gzip"
+	"context"
 	"io"
 	"net/http"
 	"strings"
@@ -10,32 +11,98 @@ import (
 )
 
 func MustGet(url string) *http.Request {
-	request, _ := http.NewRequest(http.MethodGet, url, nil)
+	request, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		panic(err)
+	}
+	return request
+}
+
+func MustGetWithContext(ctx context.Context, url string) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		panic(err)
+	}
 	return request
 }
 
 func MustPost(url string, payload io.Reader) *http.Request {
-	request, _ := http.NewRequest(http.MethodPost, url, payload)
+	request, err := http.NewRequest(http.MethodPost, url, payload)
+	if err != nil {
+		panic(err)
+	}
+	return request
+}
+
+func MustPostWithContext(ctx context.Context, url string) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
+	if err != nil {
+		panic(err)
+	}
 	return request
 }
 
 func MustPut(url string, payload io.Reader) *http.Request {
-	request, _ := http.NewRequest(http.MethodPut, url, payload)
+	request, err := http.NewRequest(http.MethodPut, url, payload)
+	if err != nil {
+		panic(err)
+	}
+	return request
+}
+
+func MustPutWithContext(ctx context.Context, url string) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodPut, url, nil)
+	if err != nil {
+		panic(err)
+	}
 	return request
 }
 
 func MustPatch(url string, payload io.Reader) *http.Request {
-	request, _ := http.NewRequest(http.MethodPatch, url, payload)
+	request, err := http.NewRequest(http.MethodPatch, url, payload)
+	if err != nil {
+		panic(err)
+	}
+	return request
+}
+
+func MustPatchWithContext(ctx context.Context, url string) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, nil)
+	if err != nil {
+		panic(err)
+	}
 	return request
 }
 
 func MustDelete(url string, payload io.Reader) *http.Request {
-	request, _ := http.NewRequest(http.MethodDelete, url, payload)
+	request, err := http.NewRequest(http.MethodDelete, url, payload)
+	if err != nil {
+		panic(err)
+	}
+	return request
+}
+
+func MustDeleteWithContext(ctx context.Context, url string) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, nil)
+	if err != nil {
+		panic(err)
+	}
 	return request
 }
 
 func MustHead(url string) *http.Request {
-	request, _ := http.NewRequest(http.MethodHead, url, nil)
+	request, err := http.NewRequest(http.MethodHead, url, nil)
+	if err != nil {
+		panic(err)
+	}
+	return request
+}
+
+func MustHeadWithContext(ctx context.Context, url string) *http.Request {
+	request, err := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
+	if err != nil {
+		panic(err)
+	}
 	return request
 }
 
@@ -53,8 +120,8 @@ func ReadBytes(client *http.Client, request *http.Request) ([]byte, *http.Respon
 		return nil, nil, err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err = Body.Close()
+	defer func(closer io.ReadCloser) {
+		err = closer.Close()
 	}(response.Body)
 
 	body, err := ReadBody(response)
