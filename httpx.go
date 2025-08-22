@@ -10,7 +10,7 @@ import (
 	"github.com/andybalholm/brotli"
 )
 
-func MustGet(url string) *http.Request {
+func NewGetRequest(url string) *http.Request {
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		panic(err)
@@ -18,7 +18,7 @@ func MustGet(url string) *http.Request {
 	return request
 }
 
-func MustGetWithContext(ctx context.Context, url string) *http.Request {
+func NewGetRequestWithContext(ctx context.Context, url string) *http.Request {
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		panic(err)
@@ -26,7 +26,7 @@ func MustGetWithContext(ctx context.Context, url string) *http.Request {
 	return request
 }
 
-func MustPost(url string, payload io.Reader) *http.Request {
+func NewPostRequest(url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequest(http.MethodPost, url, payload)
 	if err != nil {
 		panic(err)
@@ -34,7 +34,7 @@ func MustPost(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustPostWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+func NewPostRequestWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequestWithContext(ctx, http.MethodPost, url, payload)
 	if err != nil {
 		panic(err)
@@ -42,7 +42,7 @@ func MustPostWithContext(ctx context.Context, url string, payload io.Reader) *ht
 	return request
 }
 
-func MustPut(url string, payload io.Reader) *http.Request {
+func NewPutRequest(url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequest(http.MethodPut, url, payload)
 	if err != nil {
 		panic(err)
@@ -50,7 +50,7 @@ func MustPut(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustPutWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+func NewPutRequestWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequestWithContext(ctx, http.MethodPut, url, payload)
 	if err != nil {
 		panic(err)
@@ -58,7 +58,7 @@ func MustPutWithContext(ctx context.Context, url string, payload io.Reader) *htt
 	return request
 }
 
-func MustPatch(url string, payload io.Reader) *http.Request {
+func NewPatchRequest(url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequest(http.MethodPatch, url, payload)
 	if err != nil {
 		panic(err)
@@ -66,7 +66,7 @@ func MustPatch(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustPatchWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+func NewPatchRequestWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequestWithContext(ctx, http.MethodPatch, url, payload)
 	if err != nil {
 		panic(err)
@@ -74,7 +74,7 @@ func MustPatchWithContext(ctx context.Context, url string, payload io.Reader) *h
 	return request
 }
 
-func MustDelete(url string, payload io.Reader) *http.Request {
+func NewDeleteRequest(url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequest(http.MethodDelete, url, payload)
 	if err != nil {
 		panic(err)
@@ -82,7 +82,7 @@ func MustDelete(url string, payload io.Reader) *http.Request {
 	return request
 }
 
-func MustDeleteWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
+func NewDeleteRequestWithContext(ctx context.Context, url string, payload io.Reader) *http.Request {
 	request, err := http.NewRequestWithContext(ctx, http.MethodDelete, url, payload)
 	if err != nil {
 		panic(err)
@@ -90,7 +90,7 @@ func MustDeleteWithContext(ctx context.Context, url string, payload io.Reader) *
 	return request
 }
 
-func MustHead(url string) *http.Request {
+func NewHeadRequest(url string) *http.Request {
 	request, err := http.NewRequest(http.MethodHead, url, nil)
 	if err != nil {
 		panic(err)
@@ -98,7 +98,7 @@ func MustHead(url string) *http.Request {
 	return request
 }
 
-func MustHeadWithContext(ctx context.Context, url string) *http.Request {
+func NewHeadRequestWithContext(ctx context.Context, url string) *http.Request {
 	request, err := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
 	if err != nil {
 		panic(err)
@@ -106,50 +106,41 @@ func MustHeadWithContext(ctx context.Context, url string) *http.Request {
 	return request
 }
 
-func ReadString(client *http.Client, request *http.Request) (string, *http.Response, error) {
-	body, response, err := ReadBytes(client, request)
+func ReadResponseString(client *http.Client, request *http.Request) (string, *http.Response, error) {
+	body, response, err := ReadResponseBytes(client, request)
 	if err != nil {
 		return "", response, err
 	}
 	return string(body), response, err
 }
 
-func ReadBytes(client *http.Client, request *http.Request) ([]byte, *http.Response, error) {
+func ReadResponseBytes(client *http.Client, request *http.Request) ([]byte, *http.Response, error) {
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	defer func(closer io.ReadCloser) {
-		err = closer.Close()
-	}(response.Body)
-
-	body, err := ReadBody(response)
+	body, err := ReadResponseBody(response)
 	return body, response, err
 }
 
-func ReadBody(response *http.Response) ([]byte, error) {
-	if encodings, has := response.Header["Content-Encoding"]; has {
-		if strings.EqualFold(encodings[0], "br") {
-			reader := brotli.NewReader(response.Body)
+func ReadResponseBody(response *http.Response) ([]byte, error) {
+	defer response.Body.Close()
 
-			defer func(reader *brotli.Reader, src io.Reader) {
-				_ = reader.Reset(src)
-			}(reader, response.Body)
+	if encodings, ok := response.Header["Content-Encoding"]; ok && len(encodings) > 0 {
+		switch strings.ToLower(encodings[0]) {
+		case "br":
+			bodyReader := brotli.NewReader(response.Body)
+			return io.ReadAll(bodyReader)
 
-			return io.ReadAll(reader)
-		} else if strings.EqualFold(encodings[0], "gzip") {
-			reader, err := gzip.NewReader(response.Body)
+		case "gzip":
+			bodyReader, err := gzip.NewReader(response.Body)
 			if err != nil {
 				return nil, err
 			}
-
-			defer func(reader *gzip.Reader) {
-				_ = reader.Close()
-			}(reader)
-
-			return io.ReadAll(reader)
+			defer bodyReader.Close()
+			return io.ReadAll(bodyReader)
 		}
 	}
+
 	return io.ReadAll(response.Body)
 }
