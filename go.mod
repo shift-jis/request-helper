@@ -1,4 +1,4 @@
-module github.com/shift-jis/http-extensions
+module github.com/shift-jis/http-extensions-util
 
 go 1.23.0
 

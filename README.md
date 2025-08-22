@@ -1,4 +1,4 @@
-# http-extensions
+# http-extensions-util
 
 Helpers to make writing HTTP requests and reading responses easier.
 
