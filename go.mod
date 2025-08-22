@@ -1,5 +1,5 @@
-module github.com/RabiesDev/request-helper
+module github.com/shift-jis/http-extensions
 
 go 1.23.0
 
-require github.com/andybalholm/brotli v1.1.1
+require github.com/andybalholm/brotli v1.2.0

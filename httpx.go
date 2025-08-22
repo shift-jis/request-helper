@@ -1,4 +1,4 @@
-package requests
+package httpx
 
 import (
 	"compress/gzip"

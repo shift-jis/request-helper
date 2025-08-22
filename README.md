@@ -1,7 +1,7 @@
-## github.com/RabiesDev/request-helper
+# http-extensions
 
-Helpers to make it easier for me to write requests
+Helpers to make writing HTTP requests and reading responses easier.
 
-```shell
-go get github.com/RabiesDev/request-helper
-```
+## 📄 License
+
+This project is licensed under the MIT License.
